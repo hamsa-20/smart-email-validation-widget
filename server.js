@@ -81,7 +81,7 @@ async function checkDomain(domain) {
       });
       return result;
     }
-  } catch (_) {}
+  } catch (_) { }
 
   try {
     const addresses = await withTimeout(
@@ -95,15 +95,15 @@ async function checkDomain(domain) {
 
     const result = resolves
       ? {
-          valid: true,
-          reason: "Domain resolves, but no MX record was found.",
-          check: "A/AAAA fallback"
-        }
+        valid: true,
+        reason: "Domain resolves, but no MX record was found.",
+        check: "A/AAAA fallback"
+      }
       : {
-          valid: false,
-          reason: "Domain does not resolve.",
-          check: "DNS"
-        };
+        valid: false,
+        reason: "Domain does not resolve.",
+        check: "DNS"
+      };
 
     domainCache.set(domain, {
       result,
@@ -157,6 +157,6 @@ app.post("/api/verify-email", async (req, res) => {
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
-app.listen(PORT, () => {
-  console.log(`Smart Email Validator running at http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Smart Email Validator running on port ${PORT}`);
 });
