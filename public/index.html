@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Email Validator</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+  <main class="shell">
+    <section class="validator-card">
+      <div class="topline">
+        <!-- <span class="pill">TASK 1</span>
+        <span class="framework">Vanilla JavaScript Widget</span> -->
+      </div>
+
+      <div class="brand-row">
+        <div class="brand-mark">@</div>
+        <div>
+          <p class="eyebrow">REAL-TIME EMAIL VALIDATION</p>
+          <h1>Smart Email Check</h1>
+        </div>
+      </div>
+
+      <p class="description">
+        Lightweight validation with instant syntax feedback, disposable-domain
+        detection and server-side DNS/MX verification.
+      </p>
+
+      <form id="signupForm" novalidate>
+        <label for="email">Email address</label>
+        <div class="field">
+          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" data-email-validator
+            data-validator-api="/api/verify-email" aria-describedby="emailStatus">
+          <span id="emailIcon" class="field-icon" aria-hidden="true"></span>
+        </div>
+
+        <div id="emailStatus" class="status neutral" role="status" aria-live="polite">
+          Start typing to validate.
+        </div>
+
+        <button type="submit">Create account</button>
+        <p id="formMessage" class="form-message" role="status"></p>
+      </form>
+
+      <section class="details">
+        <div class="details-header">
+          <div>
+            <h2>Validation details</h2>
+            <p>What the widget checked for this address</p>
+          </div>
+          <span class="live-dot">LIVE</span>
+        </div>
+
+        <div class="detail-row"><span>Syntax</span><strong id="detailSyntax" class="detail-value">Waiting</strong></div>
+        <div class="detail-row"><span>Disposable domain</span><strong id="detailDisposable"
+            class="detail-value">Waiting</strong></div>
+        <div class="detail-row"><span>DNS / MX</span><strong id="detailDns" class="detail-value">Waiting</strong></div>
+        <div class="detail-row"><span>Response time</span><strong id="detailLatency" class="detail-value">—</strong>
+        </div>
+        <div class="detail-row"><span>Cached result</span><strong id="detailCache" class="detail-value">—</strong></div>
+      </section>
+
+      <section class="test-area">
+        <div>
+          <h2>Quick test cases</h2>
+        </div>
+        <div class="test-buttons">
+          <button type="button" class="test-button" data-test="hamsadixit202@gmail.com">Valid</button>
+          <button type="button" class="test-button" data-test="wrong@@gmail.com">Invalid syntax</button>
+          <button type="button" class="test-button" data-test="demo@mailinator.com">Disposable</button>
+          <button type="button" class="test-button" data-test="person@definitely-not-a-real-domain-12345.example">DNS
+            check</button>
+        </div>
+      </section>
+
+      <footer>
+        <span>Local syntax</span><span>→</span>
+        <span>Disposable check</span><span>→</span>
+        <span>DNS/MX</span><span>→</span>
+        <span>Structured result</span>
+      </footer>
+    </section>
+  </main>
+
+  <script src="./email-validator.js"></script>
+  <script>
+    const input = document.querySelector("#email");
+    const form = document.querySelector("#signupForm");
+    const message = document.querySelector("#formMessage");
+
+    const validator = EmailValidator.attach(input, {
+      api: input.dataset.validatorApi,
+      debounceMs: 180
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "";
+      message.className = "form-message";
+
+      const result = await validator.validateNow();
+
+      if (!result.valid && result.blocking) {
+        message.textContent = result.reason;
+        message.classList.add("error");
+        input.focus();
+        return;
+      }
+
+      message.textContent =
+        result.reason === "verification-unavailable"
+          ? "Demo submitted. Verification was unavailable, so the user was not blocked."
+          : "Demo signup submitted successfully.";
+
+      message.classList.add("success");
+    });
+
+    document.querySelectorAll("[data-test]").forEach(button => {
+      button.addEventListener("click", () => {
+        input.value = button.dataset.test;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.focus();
+      });
+    });
+  </script>
+</body>
+
+</html>
