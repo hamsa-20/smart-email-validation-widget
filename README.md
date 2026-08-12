@@ -8,9 +8,8 @@ A lightweight, reusable JavaScript widget that validates an email address as the
 
 ## Demo
 
-**Live Demo:** _Add your Render URL here after deployment_
+**Live Demo:**[ (https://smart-email-validation-widget.onrender.com)
 
-**GitHub:** _Add your GitHub repository URL here_
 
 ---
 
